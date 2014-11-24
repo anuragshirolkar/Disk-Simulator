@@ -21,7 +21,7 @@ HardDisk::HardDisk(int * t){
 	timer = t;
 	buffer.current = buffer.content.end();
 	arm_direction = 1;
-	next_op_time = 0;
+	//next_op_time = 0;
 }
 
 bool HardDisk::write_data(char * d, int p, int t, int s) {
@@ -39,6 +39,7 @@ bool HardDisk::add_operation(int tm, int op, char * d, int p, int t, int s) {
 }
 
 bool HardDisk::operate() {
+	return true;
 		//cout << "next " << next_op_time << " " << *timer << endl;
 	if(buffer.content.size() == 0){
 		next_op_time++;
@@ -86,110 +87,10 @@ void Buffer::add_entry(int tm, int rw, int p, int t, int s, char * d) {
 }
 
 int Buffer::give_next(int direction) {
-	if(content.size() == 0) {
-		return 0;
-	}
-	if(current  == content.end()) {
-		current = content.begin();
-		return 1;
-	}
-	if(content.size() == 1){
-		set<buffer_entry>::iterator temp = current;
-		current++;
-		content.erase(temp);
-		return 0;
-	}
-	if(direction == 1) {
-		if(distance(current, content.end()) == 1){
-			set<buffer_entry>::iterator temp = current;
-			temp++;
-			if(temp == content.end() || current->track_no != temp->track_no) {
-				temp = current;
-				current--;
-				content.erase(temp);
-				temp = current;
-				temp--;
-				if(current->track_no == content.begin()->track_no) {
-					current = content.begin();
-					return -1;
-				}
-				else{
-					while(temp->track_no == current->track_no){
-						temp--;
-					}
-					return -1;
-				}
-			}
-			else {
-				set<buffer_entry>::iterator temp = current;
-				current++;
-				content.erase(temp);
-				return -1;
-			}
-		}
-		else {
-			set<buffer_entry>::iterator temp = current;
-			current++;
-			content.erase(temp);
-			return 1;
-		}
-	}
-	if(direction == -1) {
-		if(current == content.begin()) {
-			set<buffer_entry>::iterator temp = current;
-			current++;
-			content.erase(temp);
-			return -1;
-		}
-		set<buffer_entry>::iterator temp = current;
-		temp++;
-		if(temp == content.end() || current->track_no != temp->track_no) {
-			temp = current;
-			current--;
-			content.erase(temp);
-			temp = current;
-			temp--;
-			if(current->track_no == content.begin()->track_no) {
-				current = content.begin();
-				return -1;
-			}
-			else{
-				while(temp->track_no == current->track_no){
-					temp--;
-				}
-				return -1;
-			}
-		}
-		else {
-			set<buffer_entry>::iterator temp = current;
-			current++;
-			content.erase(temp);
-			return -1;
-		}
-	}
-	/*
-	 *if(current  == content.end()) {
-	 *    cout << "here" << endl;
-	 *    current = content.begin();
-	 *    return *current;
-	 *}
-	 *if(direction == 1) {
-	 *    if(distance(current, content.end()) == 1)  direction = -1;
-	 *}
-	 *else if(direction == -1) {
-	 *    if(current == content.begin()) direction = 1;
-	 *}
-	 *if(direction == 1) {
-	 *    set<buffer_entry>::iterator temp = current;
-	 *    current++;
-	 *    content.erase(temp);
-	 *    return *current;
-	 *}
-	 *else if(direction == -1) {
-	 *    set<buffer_entry>::iterator temp = current;
-	 *    current--;
-	 *    content.erase(temp);
-	 *    return *current;
-	 *}
-	 */
+	set<buffer_entry>::iterator it = current;
+	current++;
+	it--;
+	current = it;
+	current++;
+	return 0;
 }
